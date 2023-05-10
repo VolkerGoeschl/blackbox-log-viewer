@@ -94,13 +94,13 @@ function FlightLogIndex(logData) {
                     lastGPS = [];
 
                 // Identify motor fields so they can be used to show the activity summary bar
-                for (var j = 0; j < 8; j++) {
+                for (let j = 0; j < 8; j++) {
                     if (mainFrameDef.nameToIndex["motor[" + j + "]"] !== undefined) {
                         motorFields.push(mainFrameDef.nameToIndex["motor[" + j + "]"]);
                     }
                 }
 
-                for (var j = 0; j < 3; j++) {
+                for (let j = 0; j < 3; j++) {
                     if (mainFrameDef.nameToIndex["rcCommand[" + j + "]"] !== undefined) {
                         maxRCFields.push(mainFrameDef.nameToIndex["rcCommand[" + j + "]"]);
                     } else {
@@ -143,10 +143,10 @@ function FlightLogIndex(logData) {
                                         throttleTotal = 0;
                                         maxMotor = 0;
                                         minMotor = 2000;
-                                        for (var j = 0; j < motorFields.length; j++) {
-                                            maxMotor = Math.max(frame[motorFields[j]], maxMotor);
-                                            minMotor = Math.min(frame[motorFields[j]], minMotor);
-                                            throttleTotal += frame[motorFields[j]];
+                                        for (let mofo of motorFields) {
+                                            maxMotor = Math.max(frame[mofo], maxMotor);
+                                            minMotor = Math.min(frame[mofo], minMotor);
+                                            throttleTotal += frame[mofo];
                                         }
                                         
                                         intraIndex.maxMotorDiff.push(maxMotor - minMotor);
@@ -154,8 +154,8 @@ function FlightLogIndex(logData) {
                                     }
                                     if (maxRCFields.length) {
                                         rcTotal = 0;
-                                        for (var j = 0; j < maxRCFields.length; j++) {
-                                            rcTotal += Math.max(rcTotal,Math.abs(frame[maxRCFields[j]]));
+                                        for (let rcfo of maxRCFields) {
+                                            rcTotal += Math.max(rcTotal,Math.abs(frame[rcfo]));
                                         }
 
                                         intraIndex.maxRC.push(rcTotal);
@@ -263,7 +263,7 @@ function FlightLogIndex(logData) {
                     maxTime: sourceIndex.maxTime,
                     avgThrottle: new Array(sourceIndex.avgThrottle.length),
                     maxRC: new Array(sourceIndex.maxRC.length),
-                    maxMotorDiff: new Array(sourceIndex.maxMotorDiff.length)
+                    maxMotorDiff: new Array(sourceIndex.maxMotorDiff.length),
                 };
             
             if (sourceIndex.times.length > 0) {
@@ -286,20 +286,14 @@ function FlightLogIndex(logData) {
             }
             
             if (sourceIndex.avgThrottle.length > 0) {
-                for (j = 0; j < sourceIndex.avgThrottle.length; j++) {
+                // Assuming that avgThrottle, maxRC and maxMotorDiff Arrays are the same length
+                // since they are build in the same loop. Just to get rid of a codesmell on Sonarcloud
+                for (let j = 0; j < sourceIndex.avgThrottle.length; j++) {
                     resultIndex.avgThrottle[j] = sourceIndex.avgThrottle[j] - 1000;
-                }
-            }
-            if (sourceIndex.maxRC.length > 0) {
-                for (j = 0; j < sourceIndex.maxRC.length; j++) {
                     resultIndex.maxRC[j] = sourceIndex.maxRC[j] * 20 - 1000;
-                }
-            }
-            if (sourceIndex.maxMotorDiff.length > 0) {
-                for (j = 0; j < sourceIndex.maxRC.length; j++) {
                     resultIndex.maxMotorDiff[j] = sourceIndex.maxMotorDiff[j] * 20 - 1000;
                 }
-            }            
+            }           
             resultIndexes[i] = resultIndex;
         }
         

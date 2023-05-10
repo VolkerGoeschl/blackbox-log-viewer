@@ -319,29 +319,26 @@ function BlackboxLogViewer() {
         var
             seekBarContainer = $(".seekBar-selection"),
             seekBarPicker,
-            item,
             seekBarItems = [
                 ["avgThrottle", "Average motor throttle"],
                 ["maxRC", "Maximum stick input"],
-                ["maxMotorDiff", "Maximum motor differential"]
+                ["maxMotorDiff", "Maximum motor differential"],
             ];
         seekBarContainer.empty();
-        seekBarPicker = $('<select class="seekBar-index form-control no-wheel">');
+        seekBarPicker = $('<select id="seekbarTypeSelect", class="seekbarTypeSelect">');
         seekBarPicker.change(function() {
-            var 
+            let 
                 activity = flightLog.getActivitySummary(),
                 displayItem = $(this).val();
             seekBarMode = displayItem;
             seekBar.setActivity(activity.times, activity[displayItem], activity.hasEvent);
             seekBar.repaint();
         });
-        for (var item = 0; item < seekBarItems.length; item++ ) {
-            var
-                logLabel,
-                option, holder;
+        for (let item of seekBarItems) {
+            let option;
             option = $("<option></option>");
-            option.text(seekBarItems[item][1]);
-            option.attr("value", seekBarItems[item][0]);
+            option.text(item[1]);
+            option.attr("value", item[0]);
             seekBarPicker.append(option);
         }
         seekBarContainer.append(seekBarPicker);
@@ -372,7 +369,7 @@ function BlackboxLogViewer() {
         }
         
         for (index = 0; index < logCount; index++) {
-            var
+            let
                 logLabel,
                 option, holder,
                 error;
@@ -2128,7 +2125,7 @@ function BlackboxLogViewer() {
                 }
             }
             if (fullPath != null) {
-                const filename = fullPath.replace(/^.*[\\\/]/, '');
+                const filename = fullPath.replace(/^.*[\\/]/, '');
                 const file = new File(fullPath, filename);
                 loadFiles([file]);
             }
